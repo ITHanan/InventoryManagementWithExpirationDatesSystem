@@ -1,4 +1,7 @@
 
+using InventoryManagementWithExpirationDatesSystem.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace InventoryManagementWithExpirationDatesSystem
 {
     public class Program
@@ -13,6 +16,8 @@ namespace InventoryManagementWithExpirationDatesSystem
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddDbContext<WarehouseManagementSystemContext>(options => options.UseSqlServer("Server=HANAN\\SQLEXPRESS;Database=WarehouseManagementSystem;Trusted_Connection=True;TrustServerCertificate=True;"));
 
             var app = builder.Build();
 
