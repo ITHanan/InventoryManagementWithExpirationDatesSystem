@@ -21,14 +21,14 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
         }
 
         // GET: api/Stocks
-        [HttpGet]
+        [HttpGet("Get-All-Item")]
         public async Task<ActionResult<IEnumerable<Stock>>> GetStocks()
         {
             return await _context.Stocks.ToListAsync();
         }
 
         // GET: api/Stocks/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}Get-Item-By-ID")]
         public async Task<ActionResult<Stock>> GetStock(int id)
         {
             var stock = await _context.Stocks.FindAsync(id);
