@@ -1,0 +1,6 @@
+@InventoryManagementWithExpirationDatesSystem_HostAddress = http://localhost:5115
+
+GET {{InventoryManagementWithExpirationDatesSystem_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
