@@ -21,14 +21,14 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
         }
 
         // GET: api/Suppliers
-        [HttpGet]
+        [HttpGet("Get All Suppliers")]
         public async Task<ActionResult<IEnumerable<Supplier>>> GetSuppliers()
         {
             return await _context.Suppliers.ToListAsync();
         }
 
         // GET: api/Suppliers/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}Get Suppliers By ID")]
         public async Task<ActionResult<Supplier>> GetSupplier(int id)
         {
             var supplier = await _context.Suppliers.FindAsync(id);
