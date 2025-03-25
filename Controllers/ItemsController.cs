@@ -1,11 +1,11 @@
-﻿using System;
+﻿using AutoMapper;
+using InventoryManagementWithExpirationDatesSystem.DTOs;
+using InventoryManagementWithExpirationDatesSystem.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using InventoryManagementWithExpirationDatesSystem.Models;
 
 namespace InventoryManagementWithExpirationDatesSystem.Controllers
 {
@@ -14,22 +14,27 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
     public class ItemsController : ControllerBase
     {
         private readonly WarehouseManagementSystemContext _context;
+        private readonly IMapper _mapper;
 
-        public ItemsController(WarehouseManagementSystemContext context)
+
+        public ItemsController(WarehouseManagementSystemContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
+
         }
 
         // GET: api/Items
         [HttpGet("Get-all-Item")]
-        public async Task<ActionResult<IEnumerable<Item>>> GetItems()
+        public async Task<ActionResult<IEnumerable<ItemDTO>>> GetItems()
         {
-            return await _context.Items.ToListAsync();
+            var items = await _context.Items.ToListAsync();
+            return Ok(_mapper.Map<IEnumerable<ItemDTO>>(items));
         }
 
         // GET: api/Items/5
         [HttpGet("{id}Get-BY-ID")]
-        public async Task<ActionResult<Item>> GetItem(int id)
+        public async Task<ActionResult<ItemDTO>> GetItem(int id)
         {
             var item = await _context.Items.FindAsync(id);
 
@@ -38,19 +43,19 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
                 return NotFound();
             }
 
-            return item;
+            return Ok(_mapper.Map<ItemDTO>(item));
         }
 
         // PUT: api/Items/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutItem(int id, Item item)
+        public async Task<IActionResult> PutItem(int id, ItemDTO itemDTO)
         {
-            if (id != item.ItemId)
+            if (id != itemDTO.ItemId)
             {
                 return BadRequest();
             }
 
+            var item = _mapper.Map<Item>(itemDTO);
             _context.Entry(item).State = EntityState.Modified;
 
             try
@@ -73,14 +78,14 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
         }
 
         // POST: api/Items
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Item>> PostItem(Item item)
+        public async Task<ActionResult<ItemDTO>> PostItem(ItemDTO itemDTO)
         {
+            var item = _mapper.Map<Item>(itemDTO);
             _context.Items.Add(item);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetItem", new { id = item.ItemId }, item);
+            return CreatedAtAction(nameof(GetItem), new { id = item.ItemId }, _mapper.Map<ItemDTO>(item));
         }
 
         // DELETE: api/Items/5
