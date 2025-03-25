@@ -1,6 +1,8 @@
 
 using InventoryManagementWithExpirationDatesSystem.Models;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+
 
 namespace InventoryManagementWithExpirationDatesSystem
 {
@@ -18,6 +20,10 @@ namespace InventoryManagementWithExpirationDatesSystem
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<WarehouseManagementSystemContext>(options => options.UseSqlServer("Server=HANAN\\SQLEXPRESS;Database=WarehouseManagementSystem;Trusted_Connection=True;TrustServerCertificate=True;"));
+
+            // Add AutoMapper
+            builder.Services.AddAutoMapper(typeof(Program));
+
 
             var app = builder.Build();
 
