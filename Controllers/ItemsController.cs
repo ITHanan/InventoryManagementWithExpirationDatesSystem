@@ -98,6 +98,15 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
                 return NotFound();
             }
 
+            // Find all stock records related to this item
+            var relatedStock = _context.Stocks.Where(s => s.ItemId == id).ToList();
+
+            // Iterate through each stock record and remove it
+            foreach (var stock in relatedStock)
+            {
+                _context.Stocks.Remove(stock);
+            }
+
             _context.Items.Remove(item);
             await _context.SaveChangesAsync();
 
