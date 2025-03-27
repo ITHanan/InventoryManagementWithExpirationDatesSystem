@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace InventoryManagementWithExpirationDatesSystem.Models;
+﻿namespace InventoryManagementWithExpirationDatesSystem.Models;
 
 public partial class Item
 {
