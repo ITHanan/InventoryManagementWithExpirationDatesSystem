@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
+using InventoryManagementWithExpirationDatesSystem.Database;
 using InventoryManagementWithExpirationDatesSystem.DTOs;
 using InventoryManagementWithExpirationDatesSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace InventoryManagementWithExpirationDatesSystem.Controllers
 {
@@ -31,6 +29,11 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
             var items = await _context.Items.ToListAsync();
             return Ok(_mapper.Map<IEnumerable<ItemDTO>>(items));
         }
+
+
+
+
+
 
         // GET: api/Items/5
         [HttpGet("{id}Get-BY-ID")]
@@ -81,19 +84,43 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
         [HttpPost]
         public async Task<ActionResult<ItemDTO>> PostItem(ItemDTO itemDTO)
         {
-            var item = _mapper.Map<Item>(itemDTO);
-            _context.Items.Add(item);
+            var itemThatWeWantToUpdate = _mapper.Map<Item>(itemDTO);
+            _context.Items.Add(itemThatWeWantToUpdate);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetItem), new { id = item.ItemId }, _mapper.Map<ItemDTO>(item));
+            return CreatedAtAction(nameof(GetItem), new { id = itemThatWeWantToUpdate.ItemId }, _mapper.Map<ItemDTO>(itemThatWeWantToUpdate));
         }
+
+
+        // PATCH: api/Items/{id}
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateItemName(int id, [FromBody] string itemNameUpdated)
+        {
+            // Find the item by ID
+            var itemThantWeWantToFindByID= await _context.Items.FindAsync(id);
+
+            if (itemThantWeWantToFindByID == null)
+            {
+                return NotFound($"Item with ID {id} was not found.");
+            }
+
+            // Update the item name
+            itemThantWeWantToFindByID.ItemName = itemNameUpdated;
+
+            // Save changes to the database
+            await _context.SaveChangesAsync();
+
+            return Ok($"Item with ID {id} has been updated to '{itemThantWeWantToFindByID.ItemName}'.");
+        }
+
+
 
         // DELETE: api/Items/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItem(int id)
         {
-            var item = await _context.Items.FindAsync(id);
-            if (item == null)
+            var itemThatWeWantToDelet = await _context.Items.FindAsync(id);
+            if (itemThatWeWantToDelet == null)
             {
                 return NotFound();
             }
@@ -107,7 +134,7 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
                 _context.Stocks.Remove(stock);
             }
 
-            _context.Items.Remove(item);
+            _context.Items.Remove(itemThatWeWantToDelet);
             await _context.SaveChangesAsync();
 
             return NoContent();

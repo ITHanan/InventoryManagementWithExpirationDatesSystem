@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using InventoryManagementWithExpirationDatesSystem.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace InventoryManagementWithExpirationDatesSystem.Models;
+namespace InventoryManagementWithExpirationDatesSystem.Database;
 
 public partial class WarehouseManagementSystemContext : DbContext
 {

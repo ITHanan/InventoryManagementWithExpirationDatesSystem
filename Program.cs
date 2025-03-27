@@ -1,7 +1,6 @@
-
-using InventoryManagementWithExpirationDatesSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using InventoryManagementWithExpirationDatesSystem.Database;
 
 
 namespace InventoryManagementWithExpirationDatesSystem
@@ -26,6 +25,27 @@ namespace InventoryManagementWithExpirationDatesSystem
 
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<WarehouseManagementSystemContext>();
+
+                // Ensure database exists
+                context.Database.EnsureCreated();
+
+                // Seed only if no data exists
+                DataSeeder.SeedData(context, 50);
+                //context.Database.Migrate();
+
+                //// Check if data already exists
+                //if (!context.Items.Any())
+                //{
+                //    var fakeItems = DataSeeder.GenerateItems(50); // Generate 50 items
+                //    context.Items.AddRange(fakeItems);
+                //    context.SaveChanges();
+                //}
+            }
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
