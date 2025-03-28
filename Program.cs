@@ -1,6 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using InventoryManagementWithExpirationDatesSystem;
 using AutoMapper;
 using InventoryManagementWithExpirationDatesSystem.Database;
+using InventoryManagementWithExpirationDatesSystem.Validations;
 
 
 namespace InventoryManagementWithExpirationDatesSystem
@@ -14,6 +18,12 @@ namespace InventoryManagementWithExpirationDatesSystem
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+
+            // Add FluentValidation and register validators
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddValidatorsFromAssemblyContaining<ItemDTOValidator>();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -37,13 +47,7 @@ namespace InventoryManagementWithExpirationDatesSystem
                 DataSeeder.SeedData(context, 50);
                 //context.Database.Migrate();
 
-                //// Check if data already exists
-                //if (!context.Items.Any())
-                //{
-                //    var fakeItems = DataSeeder.GenerateItems(50); // Generate 50 items
-                //    context.Items.AddRange(fakeItems);
-                //    context.SaveChanges();
-                //}
+ 
             }
 
 
