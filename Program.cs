@@ -5,6 +5,10 @@ using InventoryManagementWithExpirationDatesSystem;
 using AutoMapper;
 using InventoryManagementWithExpirationDatesSystem.Database;
 using InventoryManagementWithExpirationDatesSystem.Validations;
+using InventoryManagementWithExpirationDatesSystem.Interfaces;
+using InventoryManagementWithExpirationDatesSystem.Services;
+
+
 
 
 namespace InventoryManagementWithExpirationDatesSystem
@@ -18,6 +22,9 @@ namespace InventoryManagementWithExpirationDatesSystem
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            builder.Services.AddScoped<IItemService, ItemService>();
+
 
 
             // Add FluentValidation and register validators
