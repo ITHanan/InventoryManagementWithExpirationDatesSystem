@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using InventoryManagementWithExpirationDatesSystem.Database;
 using InventoryManagementWithExpirationDatesSystem.DTOs;
 using InventoryManagementWithExpirationDatesSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace InventoryManagementWithExpirationDatesSystem.Controllers
 {
@@ -11,14 +13,17 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
     [ApiController]
     public class ItemsController : ControllerBase
     {
+        private readonly IValidator<ItemDTO> _validator;
         private readonly WarehouseManagementSystemContext _context;
         private readonly IMapper _mapper;
 
 
-        public ItemsController(WarehouseManagementSystemContext context, IMapper mapper)
+        public ItemsController(WarehouseManagementSystemContext context, IMapper mapper, IValidator<ItemDTO> validator)
         {
             _context = context;
             _mapper = mapper;
+            _validator = validator;
+
 
         }
 
@@ -84,11 +89,11 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
         [HttpPost]
         public async Task<ActionResult<ItemDTO>> PostItem(ItemDTO itemDTO)
         {
-            var itemThatWeWantToUpdate = _mapper.Map<Item>(itemDTO);
-            _context.Items.Add(itemThatWeWantToUpdate);
+            var itemToAdd = _mapper.Map<Item>(itemDTO);
+            _context.Items.Add(itemToAdd);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetItem), new { id = itemThatWeWantToUpdate.ItemId }, _mapper.Map<ItemDTO>(itemThatWeWantToUpdate));
+            return CreatedAtAction(nameof(GetItem), new { id = itemToAdd.ItemId }, _mapper.Map<ItemDTO>(itemToAdd));
         }
 
 
