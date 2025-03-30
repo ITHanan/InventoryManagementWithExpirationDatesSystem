@@ -2,6 +2,7 @@
 using InventoryManagementWithExpirationDatesSystem.Models;
 using InventoryManagementWithExpirationDatesSystem.DTOs;  // Import DTO namespace
 
+
 namespace InventoryManagementWithExpirationDatesSystem.Interfaces  // Fixed namespace
 {
     public interface IItemService
@@ -11,5 +12,10 @@ namespace InventoryManagementWithExpirationDatesSystem.Interfaces  // Fixed name
         Task<ItemDTO> AddItemAsync(ItemDTO itemDto);     // Add a new item
         Task<ItemDTO> UpdateItemAsync(int id, ItemDTO itemDto);  // Update an existing item
         Task<bool> DeleteItemAsync(int itemId);          // Delete an item by its ID
+        Task<ItemDTO> UpdateItemUnitPriceAsync(int id, decimal newUnitPrice);
+
+
+
+
     }
 }
