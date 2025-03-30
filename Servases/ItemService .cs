@@ -5,6 +5,7 @@ using InventoryManagementWithExpirationDatesSystem.DTOs;
 using InventoryManagementWithExpirationDatesSystem.Interfaces;
 using InventoryManagementWithExpirationDatesSystem.Interfacese;
 using InventoryManagementWithExpirationDatesSystem.Models;
+using InventoryManagementWithExpirationDatesSystem.Validations;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
@@ -62,14 +63,30 @@ namespace InventoryManagementWithExpirationDatesSystem.Services
 
         public async Task<bool> DeleteItemAsync(int itemId)
         {
-          
-                var item = await _context.Items.FindAsync(itemId);
-                if (item == null) return false;
 
-                _context.Items.Remove(item);
-                await _context.SaveChangesAsync();
-                return true;
-            
+            var item = await _context.Items.FindAsync(itemId);
+            if (item == null) return false;
+
+            _context.Items.Remove(item);
+            await _context.SaveChangesAsync();
+            return true;
+
         }
+
+        public async Task<ItemDTO> UpdateItemUnitPriceAsync(int id, decimal newUnitPrice)
+        {
+            var item = await _context.Items.FindAsync(id);
+            if (item == null) return null;
+
+            // Validate UnitPrice
+            if (newUnitPrice <= 0) throw new FluentValidation.ValidationException("Unit price must be greater than 0.");
+
+            item.UnitPrice = newUnitPrice;
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<ItemDTO>(item);
+        }
+
+
     }
 }

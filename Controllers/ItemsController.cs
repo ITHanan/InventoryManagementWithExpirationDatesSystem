@@ -7,6 +7,7 @@ using InventoryManagementWithExpirationDatesSystem.Interfacese;
 using InventoryManagementWithExpirationDatesSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 
 namespace InventoryManagementWithExpirationDatesSystem.Controllers
@@ -71,6 +72,17 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
             await _itemService.DeleteItemAsync(id);
             return NoContent();
         }
-    }
 
+        [HttpPatch("{id}/unitprice")]
+        public async Task<IActionResult> UpdateItemUnitPrice(int id, [FromBody] decimal newUnitPrice)
+        {
+            var updatedItem = await _itemService.UpdateItemUnitPriceAsync(id, newUnitPrice);
+            return updatedItem == null 
+                ? NotFound($"Item with ID {id} not found.") 
+                : Ok($"Item with ID {id} updated to new UnitPrice: {updatedItem.UnitPrice}");
+        }
+
+    }
 }
+
+
