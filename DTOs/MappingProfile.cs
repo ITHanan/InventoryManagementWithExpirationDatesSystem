@@ -11,8 +11,8 @@ public class MappingProfile : Profile
         //.ForMember(dest => dest.Item, opt => opt.MapFrom(src => src.Item))
         //.ForMember(dest => dest.Supplier, opt => opt.MapFrom(src => src.Supplier));
 
-        CreateMap<Item, ItemDTO>();
-        CreateMap<Supplier, SupplierDTO>();
+        CreateMap<Item, ItemDTO>().ReverseMap(); ;
+        CreateMap<Supplier, SupplierDTO>().ReverseMap(); ;
 
     }
 }

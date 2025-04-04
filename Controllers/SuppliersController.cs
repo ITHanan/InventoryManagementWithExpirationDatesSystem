@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InventoryManagementWithExpirationDatesSystem.Models;
 using InventoryManagementWithExpirationDatesSystem.Database;
+using InventoryManagementWithExpirationDatesSystem.Interfacese;
+using InventoryManagementWithExpirationDatesSystem.DTOs;
 
 namespace InventoryManagementWithExpirationDatesSystem.Controllers
 {
@@ -14,61 +16,48 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
     [ApiController]
     public class SuppliersController : ControllerBase
     {
-        private readonly WarehouseManagementSystemContext _context;
+        private readonly ISupplierService  _supplierService;
 
-        public SuppliersController(WarehouseManagementSystemContext context)
+        public SuppliersController(ISupplierService supplierService)
         {
-            _context = context;
+            _supplierService = supplierService;
         }
 
         // GET: api/Suppliers
-        [HttpGet("Get-All-Item")]
-        public async Task<ActionResult<IEnumerable<Supplier>>> GetSuppliers()
+        [HttpGet("Get-All-Suppliers")]
+        public async Task<ActionResult<IEnumerable<SupplierDTO>>> GetSuppliers()
         {
-            return await _context.Suppliers.ToListAsync();
+            var suppliers = await _supplierService.GetAllSuppliersAsync();
+            return Ok(suppliers);
         }
 
         // GET: api/Suppliers/5
-        [HttpGet("{id}Get-Item-By-ID")]
-        public async Task<ActionResult<Supplier>> GetSupplier(int id)
+        [HttpGet("{id}Get-Suppliers-By-ID")]
+        public async Task<ActionResult<SupplierDTO>> GetSupplier(int id)
         {
-            var supplier = await _context.Suppliers.FindAsync(id);
+            var supplier = await _supplierService.GetsupplierByIdAsync(id);
 
             if (supplier == null)
             {
                 return NotFound();
             }
 
-            return supplier;
+            return Ok(supplier);
         }
 
         // PUT: api/Suppliers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSupplier(int id, Supplier supplier)
+        public async Task<IActionResult> PutSupplier(int id, SupplierDTO supplierDTO)
         {
-            if (id != supplier.SupplierId)
+            if (id != supplierDTO.SupplierId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(supplier).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SupplierExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                await _supplierService.UpdateSuppliersAsync(id, supplierDTO);
+           
 
             return NoContent();
         }
@@ -76,33 +65,22 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
         // POST: api/Suppliers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Supplier>> PostSupplier(Supplier supplier)
+        public async Task<ActionResult<SupplierDTO>> PostSupplier(SupplierDTO supplierDTO)
         {
-            _context.Suppliers.Add(supplier);
-            await _context.SaveChangesAsync();
+           var createdSupplier =  await _supplierService.AddSuppliersAsync(supplierDTO);
 
-            return CreatedAtAction("GetSupplier", new { id = supplier.SupplierId }, supplier);
+            return CreatedAtAction(nameof(GetSupplier), new { id = createdSupplier.SupplierId }, createdSupplier);
         }
 
         // DELETE: api/Suppliers/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSupplier(int id)
         {
-            var supplier = await _context.Suppliers.FindAsync(id);
-            if (supplier == null)
-            {
-                return NotFound();
-            }
-
-            _context.Suppliers.Remove(supplier);
-            await _context.SaveChangesAsync();
-
+            var supplier = await _supplierService.DeleteSuppliersAsync(id);
+       
             return NoContent();
         }
 
-        private bool SupplierExists(int id)
-        {
-            return _context.Suppliers.Any(e => e.SupplierId == id);
-        }
+       
     }
 }
