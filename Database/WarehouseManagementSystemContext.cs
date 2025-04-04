@@ -15,11 +15,10 @@ public partial class WarehouseManagementSystemContext : DbContext
         : base(options)
     {
     }
-
+   
     public virtual DbSet<Item> Items { get; set; }
 
     public virtual DbSet<Stock> Stocks { get; set; }
-
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -72,6 +71,7 @@ public partial class WarehouseManagementSystemContext : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
