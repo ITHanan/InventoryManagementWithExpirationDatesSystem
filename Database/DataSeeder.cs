@@ -5,7 +5,7 @@ namespace InventoryManagementWithExpirationDatesSystem.Database
 {
     public static class DataSeeder
     {
-        public static void SeedData(WarehouseManagementSystemContext context, int itemCount, int stockCount = 100)
+        public static void SeedData(WarehouseManagementSystemContext context, int itemCount, int stockCount = 100, int supplierCount = 10)
         {
             if (context.Items.Any()) return;
 
@@ -35,7 +35,19 @@ namespace InventoryManagementWithExpirationDatesSystem.Database
             context.Stocks.AddRange(stocks);
             context.SaveChanges();
 
-            Console.WriteLine($"Added {itemCount} new items and {stockCount} new stocks into the database.");
+
+            var supplierFaker = new Faker<Supplier>()
+               .RuleFor(s => s.SupplierName, f => f.Company.CompanyName())
+               .RuleFor(s => s.ContactPerson, f => f.Name.FullName())
+               .RuleFor(s => s.PhoneNumber, f => f.Phone.PhoneNumber());
+
+            var suppliers = supplierFaker.Generate(supplierCount);
+
+            context.Suppliers.AddRange(suppliers);
+            context.SaveChanges();
+
+
+            Console.WriteLine($"Added {itemCount} new items and {stockCount} new stocks into the database and {supplierCount} suppliers to the database.");
         }
     }
 }

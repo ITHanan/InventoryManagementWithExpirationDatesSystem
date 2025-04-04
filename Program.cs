@@ -26,18 +26,25 @@ namespace InventoryManagementWithExpirationDatesSystem
 
             builder.Services.AddControllers();
 
+
+            // Register StockService 
+            builder.Services.AddScoped<IStockService, StockService>();
             builder.Services.AddScoped<IItemService, ItemService>();
+            builder.Services.AddScoped<ISupplierService, SupplierService>();
 
 
 
-            builder.Services.AddValidatorsFromAssemblyContaining<StockDTOValidator>();  // Add FluentValidation
+
             builder.Services.AddScoped<IValidator<StockDTO>, StockDTOValidator>();  // Inject the StockDTOValidator
 
 
 
             // Add FluentValidation and register validators
             builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddValidatorsFromAssemblyContaining<StockDTOValidator>();  // Add FluentValidation
             builder.Services.AddValidatorsFromAssemblyContaining<ItemDTOValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<SupplierDTOValidator>();
+
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -52,13 +59,11 @@ namespace InventoryManagementWithExpirationDatesSystem
 
 
 
-            // Register StockService 
-            builder.Services.AddScoped<IStockService, StockService>();
-
-
-
 
             var app = builder.Build();
+
+
+
 
             using (var scope = app.Services.CreateScope())
             {
@@ -68,7 +73,7 @@ namespace InventoryManagementWithExpirationDatesSystem
                 context.Database.EnsureCreated();
 
                 // Seed only if no data exists
-                if (!context.Items.Any() || !context.Stocks.Any())
+                if (!context.Items.Any() || !context.Stocks.Any() || !context.Suppliers.Any())
                 {
                     DataSeeder.SeedData(context, 50); // Call seed method to add data
                 }                //context.Database.Migrate();///////////////////////////////////
