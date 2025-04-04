@@ -13,9 +13,9 @@ public partial class Stock
 
     public int Quantity { get; set; }
 
-    public DateOnly ExpiryDate { get; set; }
+    public DateTime ExpiryDate { get; set; }
 
-    public DateOnly? ReceivedDate { get; set; }
+    public DateTime? ReceivedDate { get; set; }
 
     public virtual Item Item { get; set; } = null!;
 

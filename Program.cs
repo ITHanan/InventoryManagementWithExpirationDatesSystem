@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using InventoryManagementWithExpirationDatesSystem;
@@ -7,6 +7,9 @@ using InventoryManagementWithExpirationDatesSystem.Database;
 using InventoryManagementWithExpirationDatesSystem.Validations;
 using InventoryManagementWithExpirationDatesSystem.Interfaces;
 using InventoryManagementWithExpirationDatesSystem.Services;
+using InventoryManagementWithExpirationDatesSystem.Interfacese;
+using InventoryManagementWithExpirationDatesSystem.Servases;
+using InventoryManagementWithExpirationDatesSystem.DTOs;
 
 
 
@@ -27,6 +30,11 @@ namespace InventoryManagementWithExpirationDatesSystem
 
 
 
+            builder.Services.AddValidatorsFromAssemblyContaining<StockDTOValidator>();  // Add FluentValidation
+            builder.Services.AddScoped<IValidator<StockDTO>, StockDTOValidator>();  // Inject the StockDTOValidator
+
+
+
             // Add FluentValidation and register validators
             builder.Services.AddFluentValidationAutoValidation();
             builder.Services.AddValidatorsFromAssemblyContaining<ItemDTOValidator>();
@@ -35,10 +43,19 @@ namespace InventoryManagementWithExpirationDatesSystem
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+
             builder.Services.AddDbContext<WarehouseManagementSystemContext>(options => options.UseSqlServer("Server=HANAN\\SQLEXPRESS;Database=WarehouseManagementSystem;Trusted_Connection=True;TrustServerCertificate=True;"));
 
             // Add AutoMapper
             builder.Services.AddAutoMapper(typeof(Program));
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+
+
+            // Register StockService 
+            builder.Services.AddScoped<IStockService, StockService>();
+
+
 
 
             var app = builder.Build();
@@ -51,11 +68,12 @@ namespace InventoryManagementWithExpirationDatesSystem
                 context.Database.EnsureCreated();
 
                 // Seed only if no data exists
-                DataSeeder.SeedData(context, 50);
-                //context.Database.Migrate();
-
- 
+                if (!context.Items.Any() || !context.Stocks.Any())
+                {
+                    DataSeeder.SeedData(context, 50); // Call seed method to add data
+                }                //context.Database.Migrate();///////////////////////////////////
             }
+
 
 
             // Configure the HTTP request pipeline.
@@ -65,13 +83,10 @@ namespace InventoryManagementWithExpirationDatesSystem
                 app.UseSwaggerUI();
             }
 
+
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
-
             app.Run();
         }
     }
