@@ -5,6 +5,7 @@ using InventoryManagementWithExpirationDatesSystem.DTOs;
 using InventoryManagementWithExpirationDatesSystem.Interfaces;
 using InventoryManagementWithExpirationDatesSystem.Interfacese;
 using InventoryManagementWithExpirationDatesSystem.Models;
+using InventoryManagementWithExpirationDatesSystem.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,11 +20,25 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
     public class ItemsController : ControllerBase
     {
         private readonly IItemService _itemService;
+        private readonly IExternalApiService _externalApiService;
 
-        public ItemsController(IItemService itemService)
+
+        public ItemsController(IItemService itemService, IExternalApiService externalApiService)
         {
             _itemService = itemService;
+            _externalApiService = externalApiService;
         }
+
+
+
+
+        [HttpGet("external-items")]
+        public async Task<IActionResult> GetExternalItems()
+        {
+            var items = await _externalApiService.GetExternalItemsAsync();
+            return Ok(items);
+        }
+
 
         // GET: api/Items
         [Authorize(Roles = "Admin")]
