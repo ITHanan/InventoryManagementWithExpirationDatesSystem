@@ -15,7 +15,7 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
+
     public class ItemsController : ControllerBase
     {
         private readonly IItemService _itemService;
@@ -79,9 +79,29 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
         public async Task<IActionResult> UpdateItemUnitPrice(int id, [FromBody] decimal newUnitPrice)
         {
             var updatedItem = await _itemService.UpdateItemUnitPriceAsync(id, newUnitPrice);
-            return updatedItem == null 
-                ? NotFound($"Item with ID {id} not found.") 
+            return updatedItem == null
+                ? NotFound($"Item with ID {id} not found.")
                 : Ok($"Item with ID {id} updated to new UnitPrice: {updatedItem.UnitPrice}");
+        }
+
+
+        /// <summary>
+        /// Search items with optional filters and sorting options.
+        /// </summary>
+        /// <param name="filter">Filter by item name or category</param>
+        /// <param name="sortOrder">Sorting direction (asc/desc)</param>
+        /// <param name="sortBy">Field to sort by (ItemName, UnitPrice)</param>
+        /// <param name="itemId">Filter by ItemId</param>
+        /// <returns>List of filtered and sorted items</returns>
+        [HttpGet("search")]
+        public async Task<IActionResult> GetFilteredAndSortedItems(
+            [FromQuery] string? filter,
+            [FromQuery] string? sortOrder = "asc",
+            [FromQuery] string? sortBy = "itemname",
+            [FromQuery] int? itemId = null)
+        {
+            var items = await _itemService.GetFilteredAndSortedItemsAsync(filter, sortOrder, sortBy, itemId);
+            return Ok(items);
         }
 
     }

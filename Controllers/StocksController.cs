@@ -125,10 +125,11 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
                 return NotFound();
             }
 
-          
+
             return NoContent();
         }
 
-       
+
+
     }
 }
