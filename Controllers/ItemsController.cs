@@ -5,6 +5,7 @@ using InventoryManagementWithExpirationDatesSystem.DTOs;
 using InventoryManagementWithExpirationDatesSystem.Interfaces;
 using InventoryManagementWithExpirationDatesSystem.Interfacese;
 using InventoryManagementWithExpirationDatesSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -25,6 +26,7 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
         }
 
         // GET: api/Items
+        [Authorize(Roles = "Admin")]
         [HttpGet("Get-all-Item")]
         public async Task<ActionResult<IEnumerable<ItemDTO>>> GetItems()
         {

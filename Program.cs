@@ -1,18 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.AspNetCore;
-using InventoryManagementWithExpirationDatesSystem;
-using AutoMapper;
 using InventoryManagementWithExpirationDatesSystem.Database;
-using InventoryManagementWithExpirationDatesSystem.Validations;
+using InventoryManagementWithExpirationDatesSystem.DTOs;
 using InventoryManagementWithExpirationDatesSystem.Interfaces;
-using InventoryManagementWithExpirationDatesSystem.Services;
 using InventoryManagementWithExpirationDatesSystem.Interfacese;
 using InventoryManagementWithExpirationDatesSystem.Servases;
-using InventoryManagementWithExpirationDatesSystem.DTOs;
-
-
-
+using InventoryManagementWithExpirationDatesSystem.Services;
+using InventoryManagementWithExpirationDatesSystem.Validations;
+using InventoryManagementWithExpirationDatesSystem.JWTHelper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using InventoryManagementWithExpirationDatesSystem.Extensions;
 
 namespace InventoryManagementWithExpirationDatesSystem
 {
@@ -22,77 +22,64 @@ namespace InventoryManagementWithExpirationDatesSystem
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
+            // Add services
             builder.Services.AddControllers();
 
-
-            // Register StockService 
+            // Dependency Injections
             builder.Services.AddScoped<IStockService, StockService>();
             builder.Services.AddScoped<IItemService, ItemService>();
             builder.Services.AddScoped<ISupplierService, SupplierService>();
 
+            // DTO Validators
+            builder.Services.AddScoped<IValidator<StockDTO>, StockDTOValidator>();
+            builder.Services.AddScoped<IValidator<ItemDTO>, ItemDTOValidator>();
+            builder.Services.AddScoped<IValidator<SupplierDTO>, SupplierDTOValidator>();
 
-
-
-            builder.Services.AddScoped<IValidator<StockDTO>, StockDTOValidator>();  // Inject the StockDTOValidator
-
-
-
-            // Add FluentValidation and register validators
+            // FluentValidation Setup
             builder.Services.AddFluentValidationAutoValidation();
-            builder.Services.AddValidatorsFromAssemblyContaining<StockDTOValidator>();  // Add FluentValidation
-            builder.Services.AddValidatorsFromAssemblyContaining<ItemDTOValidator>();
-            builder.Services.AddValidatorsFromAssemblyContaining<SupplierDTOValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<StockDTOValidator>();
+
+            builder.Services.AddJwtAuthentication(builder.Configuration);
+
+            builder.Services.AddSwaggerWithJwt();
 
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            // DbContext
+            builder.Services.AddDbContext<WarehouseManagementSystemContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("HANAN_IDENTITY")));
 
-
-            builder.Services.AddDbContext<WarehouseManagementSystemContext>(options => options.UseSqlServer("Server=HANAN\\SQLEXPRESS;Database=WarehouseManagementSystem;Trusted_Connection=True;TrustServerCertificate=True;"));
-
-            // Add AutoMapper
+            // AutoMapper
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-
-
-
             var app = builder.Build();
 
-
-
-
+            // Seed Data
             using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<WarehouseManagementSystemContext>();
-
-                // Ensure database exists
                 context.Database.EnsureCreated();
 
-                // Seed only if no data exists
                 if (!context.Items.Any() || !context.Stocks.Any() || !context.Suppliers.Any())
                 {
-                    DataSeeder.SeedData(context, 50); // Call seed method to add data
-                }                //context.Database.Migrate();///////////////////////////////////
+                    DataSeeder.SeedData(context, 50);
+                }
             }
 
-
-
-            // Configure the HTTP request pipeline.
+            // Middleware
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
-
             app.UseHttpsRedirection();
+            app.UseAuthentication(); // <- make sure this comes before Authorization
             app.UseAuthorization();
+
             app.MapControllers();
             app.Run();
         }
     }
 }
+
