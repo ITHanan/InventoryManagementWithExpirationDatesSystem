@@ -5,7 +5,6 @@
 
         public int ItemId { get; set; } 
         public required string ItemName { get; set; }
-
         public  string Category { get; set; }
         public required decimal UnitPrice { get; set; }
 

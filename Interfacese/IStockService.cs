@@ -10,6 +10,8 @@ namespace InventoryManagementWithExpirationDatesSystem.Interfacese
         Task<StockDTO> AddStockAsync(StockDTO stockDTO);
         Task<StockDTO> UpdateStockAsync(int stockId, StockDTO stockDTO);
         Task<bool> DeleteStockAsync(int stockId);
+
+
     }
 
 }

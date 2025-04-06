@@ -21,6 +21,7 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
         [HttpPost("logIn")]
         public IActionResult Login([FromBody] LoginModel login)
         {
+            
             if (login.Username == "admin" && login.Password == "password")
             {
                 var token = _jwtGenerater.JWTTokenGenerator(login.Username);

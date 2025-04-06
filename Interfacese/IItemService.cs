@@ -15,6 +15,10 @@ namespace InventoryManagementWithExpirationDatesSystem.Interfaces  // Fixed name
         Task<ItemDTO> UpdateItemUnitPriceAsync(int id, decimal newUnitPrice);
 
 
+        Task<IEnumerable<ItemDTO>> GetFilteredAndSortedItemsAsync(string? filterOrCategory, string? sortOrder, string? sortBy, int? itemId);
+
+
+
 
 
     }
