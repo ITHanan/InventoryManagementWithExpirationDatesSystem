@@ -39,6 +39,9 @@ namespace InventoryManagementWithExpirationDatesSystem
             builder.Services.AddFluentValidationAutoValidation();
             builder.Services.AddValidatorsFromAssemblyContaining<StockDTOValidator>();
 
+            builder.Services.AddHttpClient<IExternalApiService, ExternalApiService>();
+
+
             builder.Services.AddJwtAuthentication(builder.Configuration);
 
             builder.Services.AddSwaggerWithJwt();
