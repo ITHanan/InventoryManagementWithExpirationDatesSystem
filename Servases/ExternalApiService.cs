@@ -19,7 +19,7 @@ namespace InventoryManagementWithExpirationDatesSystem.Services
 
         public async Task<IEnumerable<ItemDTO>> GetExternalItemsAsync()
         {
-            var url = "https://jsonplaceholder.typicode.com/posts";
+            var url = "https://jsonplaceholder.typicode.com/posts";//
 
             try
             {

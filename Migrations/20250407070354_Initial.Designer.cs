@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventoryManagementWithExpirationDatesSystem.Migrations
 {
     [DbContext(typeof(WarehouseManagementSystemContext))]
-    [Migration("20250406135304_AddUserTable")]
-    partial class AddUserTable
+    [Migration("20250407070354_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
