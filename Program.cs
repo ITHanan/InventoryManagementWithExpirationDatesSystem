@@ -63,7 +63,7 @@ namespace InventoryManagementWithExpirationDatesSystem
                 var context = scope.ServiceProvider.GetRequiredService<WarehouseManagementSystemContext>();
                 context.Database.EnsureCreated();
 
-                if (!context.Items.Any() || !context.Stocks.Any() || !context.Suppliers.Any())
+                if ( !context.Stocks.Any() && !context.Suppliers.Any())
                 {
                     DataSeeder.SeedData(context, 50);
                 }
