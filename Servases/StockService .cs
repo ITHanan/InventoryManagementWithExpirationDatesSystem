@@ -23,24 +23,37 @@ namespace InventoryManagementWithExpirationDatesSystem.Servases
 
         public async Task<StockDTO> AddStockAsync(StockDTO stockDTO)
         {
-
             try
             {
+                // Check if Item exists
+                var itemExists = await _context.Items.AnyAsync(i => i.ItemId == stockDTO.ItemId);
+                if (!itemExists)
+                {
+                    throw new ArgumentException(" Cannot add stock: The referenced ItemId does not exist.");
+                }
+
+                // Check if Supplier exists
+                var supplierExists = await _context.Suppliers.AnyAsync(s => s.SupplierId == stockDTO.SupplierId);
+                if (!supplierExists)
+                {
+                    throw new ArgumentException(" Cannot add stock: The referenced SupplierId does not exist.");
+                }
+
                 var stock = _mapper.Map<Stock>(stockDTO);
                 _context.Stocks.Add(stock);
-
-
                 await _context.SaveChangesAsync();
 
-
+                Console.WriteLine(" Stock added successfully.");
                 return _mapper.Map<StockDTO>(stock);
             }
             catch (Exception ex)
             {
-                // Log the exception (using a logging framework)
+                Console.WriteLine($" Error while adding stock: {ex.Message}");
                 throw new ApplicationException("An error occurred while adding the stock", ex);
             }
         }
+
+
 
         public async Task<bool> DeleteStockAsync(int stockId)
         {
