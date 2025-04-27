@@ -25,7 +25,7 @@ namespace InventoryManagementWithExpirationDatesSystem.Servases
         {
             try
             {
-                // Check if Item exists
+                // Check if Item exists 
                 var itemExists = await _context.Items.AnyAsync(i => i.ItemId == stockDTO.ItemId);
                 if (!itemExists)
                 {
