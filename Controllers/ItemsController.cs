@@ -3,7 +3,6 @@ using FluentValidation;
 using InventoryManagementWithExpirationDatesSystem.Database;
 using InventoryManagementWithExpirationDatesSystem.DTOs;
 using InventoryManagementWithExpirationDatesSystem.Interfaces;
-using InventoryManagementWithExpirationDatesSystem.Interfacese;
 using InventoryManagementWithExpirationDatesSystem.Models;
 using InventoryManagementWithExpirationDatesSystem.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -81,6 +80,8 @@ namespace InventoryManagementWithExpirationDatesSystem.Controllers
             var createdItem = await _itemService.AddItemAsync(itemDTO);
             return CreatedAtAction(nameof(GetItem), new { id = createdItem.ItemId }, createdItem);
         }
+
+
 
         // DELETE: api/Items/5
         [HttpDelete("{id}")]

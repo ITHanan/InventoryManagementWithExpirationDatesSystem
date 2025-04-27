@@ -25,7 +25,7 @@ namespace InventoryManagementWithExpirationDatesSystem.Servases
         {
             try
             {
-                // Check if Item exists
+                // Check if Item exists 
                 var itemExists = await _context.Items.AnyAsync(i => i.ItemId == stockDTO.ItemId);
                 if (!itemExists)
                 {
@@ -113,7 +113,7 @@ namespace InventoryManagementWithExpirationDatesSystem.Servases
                 if (existingStock == null) return null;
 
 
-                _mapper.Map(stockDTO, existingStock); // Update item properties from DTO///////////
+                _mapper.Map(stockDTO, existingStock); // Update item properties from DTO
               //  _context.Stocks.Update(existingStock);
                 await _context.SaveChangesAsync();
                 return _mapper.Map<StockDTO>(existingStock);
